@@ -347,7 +347,7 @@ func upload(w http.ResponseWriter, req *http.Request, link string) {
 	h.Write(buf.Bytes())
 	tag := fmt.Sprintf("%x", h.Sum(nil))[:32]
 
-	if err := ioutil.WriteFile("qr/upload/"+tag+".png", buf.Bytes(), 0666); err != nil {
+	if err := ioutil.WriteFile(storageloc + "/upload/"+tag+".png", buf.Bytes(), 0666); err != nil {
 		panic(err)
 	}
 
@@ -369,7 +369,7 @@ func flag(w http.ResponseWriter, req *http.Request, img string) {
 }
 
 func loadSize(name string, max int) *image.RGBA {
-	data, err := ioutil.ReadFile("qr/upload/" + name + ".png")
+	data, err := ioutil.ReadFile(storageloc + "/upload/" + name + ".png")
 	if err != nil {
 		panic(err)
 	}

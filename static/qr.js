@@ -1,4 +1,13 @@
-var _____WB$wombat$assign$function_____ = function(name) {return (self._wb_wombat && self._wb_wombat.local_init && self._wb_wombat.local_init(name)) || self[name]; };
+
+
+// some kinda mini weird javascript high level indirection layer
+var _____WB$wombat$assign$function_____ = function(name) {
+    console.log("wombat function")
+    console.log(self)
+    console.log(self._wb_wombat)
+    return (self._wb_wombat && self._wb_wombat.local_init && self._wb_wombat.local_init(name)) 
+        || self[name]; 
+};
 if (!self.__WB_pmw) { self.__WB_pmw = function(obj) { this.__WB_source = obj; return this; } }
 {
   let window = _____WB$wombat$assign$function_____("window");
@@ -86,6 +95,7 @@ function rotate() { rotation = (rotation+1) & 3; update(); }
 
 
 }
+
 /*
      FILE ARCHIVED ON 01:05:51 May 23, 2020 AND RETRIEVED FROM THE
      INTERNET ARCHIVE ON 04:43:45 Jan 18, 2021.
