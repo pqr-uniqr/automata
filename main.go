@@ -15,9 +15,8 @@ import (
 )
 
 func main() {
-	fmt.Println("hello world!")
-
 	fs := http.FileServer(http.Dir("./static"))
+
 	http.Handle("/", fs)
 
 	http.HandleFunc("/.info", info)

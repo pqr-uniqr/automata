@@ -51,6 +51,8 @@ import (
 	"rsc.io/swtch/qrweb/resize"
 )
 
+var storageloc string = "static"
+
 func runTemplate(w http.ResponseWriter, name string, data interface{}) {
 	t := template.New("main")
 
@@ -133,7 +135,7 @@ func Draw(w http.ResponseWriter, req *http.Request) {
 			Name: img,
 			URL:  url,
 		}
-		runTemplate(w, "qr/main.html", &data)
+		runTemplate(w, storageloc + "/main.html", &data)
 		return
 	}
 
