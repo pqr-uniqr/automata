@@ -11,4 +11,4 @@ crate-type = ["cdylib"] # produces .so files on linux, no entry through main()
 
 [dependencies]
 wasm-bindgen = "0.2.70"
-wee_alloc = { version = "0.4.5", optional = true }
+pitch-detection = "0.1"
