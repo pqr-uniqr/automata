@@ -6,7 +6,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+//	"log"
 	"net/http"
 	"runtime"
 
@@ -30,7 +30,8 @@ func main() {
 	http.Handle("/qr/encode", carp(qrweb.Encode))
 	http.Handle("/qr/show/", carp(qrweb.Show))
 	fmt.Println("all handlers installed!")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	// log.Fatal(http.ListenAndServe(":8080", nil))
+	fmt.Println(http.ListenAndServe(":8080", nil))
 }
 
 func info(w http.ResponseWriter, r *http.Request) {
@@ -48,3 +49,4 @@ func carp(f http.HandlerFunc) http.Handler {
 		f.ServeHTTP(w, req)
 	})
 }
+

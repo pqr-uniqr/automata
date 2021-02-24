@@ -1,2 +1,4 @@
 pqr
 static/upload
+rust-wasm/target
+rust-wasm/pkg
