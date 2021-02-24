@@ -25,4 +25,5 @@
         rmdir rust-wasm/pkg
     }
     go clean
+    rm main.wasm
 }
