@@ -1,4 +1,7 @@
 pqr
 static/upload
+static/pkg
 rust-wasm/target
 rust-wasm/pkg
+main.wasm
+static/main.wasm
