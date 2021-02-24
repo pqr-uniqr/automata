@@ -2,8 +2,10 @@
 
 [[ "$1" == 'build' ]] && {
     echo building..
+    cd go-wasm
     GOOS=js GOARCH=wasm go build -o main.wasm
-    cp main.wasm static/
+    cp main.wasm ../static/
+    cd ..
     cd rust-wasm
     wasm-pack build --release --target web
     cd ..
@@ -13,6 +15,7 @@
 
 [[ "$1" == 'clean' ]] && {
     echo cleaning..
+    [[ -f "go-wasm/main.wasm" ]] && rm -f go-wasm/main.wasm
     [[ -f "static/main.wasm" ]] && rm -f static/main.wasm
     [[ -d "static/pkg" ]] && {
         rm -f static/pkg/*
@@ -25,5 +28,4 @@
         rmdir rust-wasm/pkg
     }
     go clean
-    rm main.wasm
 }
