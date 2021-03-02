@@ -24,5 +24,11 @@ features = [
   'GainNode',
   'OscillatorNode',
   'OscillatorType',
+  'Window',
+  'Document',
+  'Element',
+  'HtmlElement',
+  'Node',
+
 ]
 

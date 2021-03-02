@@ -1,5 +1,5 @@
 use pitch_detection::{McLeodDetector, PitchDetector};
-use web_sys::{AudioContext, OscillatorType, AudioBufferSourceNode};
+use web_sys::*;
 use wasm_bindgen::prelude::*;
 
 // originally based on https://rustwasm.github.io/wasm-bindgen/examples/web-audio.html
@@ -243,8 +243,7 @@ pub struct Destroyer {
     // TODO consider using AudioWorkletNode - from spec:
     // "If sample-accurate playback of network- or disk-backed assets is required, an implementer
     // should use AudioWorkletNode to implement playback."
-    /*
-    audio_src: web_sys::AudioBufferSourceNode, */
+    audio_src: web_sys::AudioBufferSourceNode,
 }
 
 #[wasm_bindgen]
@@ -255,12 +254,6 @@ impl Destroyer {
 
         // ctor() audioContext, top lvl entr pt of Web Audio
         let ctx = web_sys::AudioContext::new()?;
-
-        Ok(Destroyer {
-            ctx,
-        })
-        /*
-         
         // TODO hw set opt ctor args?
         // ? y detune, playback r/o? dynmc ctrl impsbl?
         // -> dem setby ctor args
@@ -273,29 +266,24 @@ impl Destroyer {
                                     /* unsigned long length */ 1,
                                     /* float smpl rate */ 3300);
 
-        web_sys::window().document().body();
+        // retriv <audio>
+        log(web_sys::window().expect("window")
+            .document().expect("document")
+            .body().expect("body"));
+        let window = web_sys::window().expect("no global `window` exists");
+        let document = window.document().expect("should have a document on window");
+        let body = document.body().expect("document should have a body");
 
-		
-		let window = web_sys::window().expect("no global `window` exists");
-		let document = window.document().expect("should have a document on window");
-		let body = document.body().expect("document should have a body");
 
-		// Manufacture the element we're gonna append
-		let val = document.create_element("p")?;
-		val.set_text_content("Hello from Rust!");
-
-		body.append_child(&val)?;
-
+        /*
         // ? hw load snd fyl 2 Float32Array? encoding suppted?
         // aif no, flac ya
         let floatArr
-
         buf.copy_to_channel(floatArr, 1, 0);
-
-
 
         // TODO <- audioBuffer
         audio_src.buffer().set_value();
+        */
 
         // TODO configure audio buffer src node
 
@@ -303,7 +291,6 @@ impl Destroyer {
             ctx,
             audio_src,
         })
-        */
     }
 
     #[wasm_bindgen]
