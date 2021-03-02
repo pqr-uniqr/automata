@@ -1,12 +1,33 @@
-import("./pkg/wasm.js").then((rust_module) => {
-	rust_module.default().then((_) => {
+import("./pkg/wasm.js").then((celetial_woods /* rust_module */) => {
+	celetial_woods.default().then((_) => {
 
+        let infinite_destructive_empowerment = null;
+
+		const destroy_button = document.getElementById("destroy");
+		const audioElement = document.querySelector('audio');
+		destroy_button.addEventListener("click", event => {
+
+			// pass it into the audio context
+			// const track = audioContext.createMediaElementSource(audioElement);
+
+			if (infinite_destructive_empowerment === null) {
+                infinite_destructive_empowerment = new celetial_woods.Destroyer();
+                console.log(infinite_destructive_empowerment);
+                infinite_destructive_empowerment.power_to_kill();
+			} else {
+				infinite_destructive_empowerment.free();
+				infinite_destructive_empowerment = null;
+			}
+		});
+
+
+        /*
 		let fm = null;
 
 		const play_button = document.getElementById("play");
 		play_button.addEventListener("click", event => {
 			if (fm === null) {
-				fm = new rust_module.FmOsc();
+				fm = new celetial_woods.FmOsc();
 				fm.set_note(50);
 				fm.set_fm_frequency(0);
 				fm.set_fm_amount(0);
@@ -39,6 +60,7 @@ import("./pkg/wasm.js").then((rust_module) => {
 		});
 
         console.log('rust-wasm done');
+        */
 
 	})
 });

@@ -1,6 +1,8 @@
 use pitch_detection::{McLeodDetector, PitchDetector};
-use web_sys::{AudioContext, OscillatorType};
+use web_sys::{AudioContext, OscillatorType, AudioBufferSourceNode};
 use wasm_bindgen::prelude::*;
+
+// originally based on https://rustwasm.github.io/wasm-bindgen/examples/web-audio.html
 
 #[cfg(test)]
 mod tests {
@@ -114,20 +116,23 @@ impl Drop for FmOsc {
 impl FmOsc {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Result<FmOsc, JsValue> {
+        // instantiate audioContext, web audio's top level, entry point interface
         let ctx = web_sys::AudioContext::new()?;
 
-        // Create our web audio objects.
+
+
+        // create oscillators and knobs
         let primary = ctx.create_oscillator()?;
         let fm_osc = ctx.create_oscillator()?;
         let gain = ctx.create_gain()?;
         let fm_gain = ctx.create_gain()?;
 
-        // Some initial settings:
+        // set oscillator wave types and frequencies 
         primary.set_type(OscillatorType::Sine);
         primary.frequency().set_value(440.0); // A4 note
         gain.gain().set_value(0.0); // starts muted
         fm_gain.gain().set_value(0.0); // no initial frequency modulation
-        fm_osc.set_type(OscillatorType::Sine);
+        fm_osc.set_type(OscillatorType::Sine); 
         fm_osc.frequency().set_value(0.0);
 
         // Connect the nodes up!
@@ -208,5 +213,101 @@ impl FmOsc {
         self.fm_osc
             .frequency()
             .set_value(self.fm_freq_ratio * self.primary.frequency().value());
+    }
+}
+
+
+// https://rustwasm.github.io/wasm-bindgen/examples/console-log.html
+#[wasm_bindgen]
+extern "C" {
+    // Use `js_namespace` here to bind `console.log(..)` instead of just
+    // `log(..)`
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+
+    // The `console.log` is quite polymorphic, so we can bind it with multiple
+    // signatures. Note that we need to use `js_name` to ensure we always call
+    // `log` in JS.
+    #[wasm_bindgen(js_namespace = console, js_name = log)]
+    fn log_u32(a: u32);
+
+    // Multiple arguments too!
+    #[wasm_bindgen(js_namespace = console, js_name = log)]
+    fn log_many(a: &str, b: &str);
+}
+
+#[wasm_bindgen]
+pub struct Destroyer {
+    ctx: AudioContext,
+
+    // TODO consider using AudioWorkletNode - from spec:
+    // "If sample-accurate playback of network- or disk-backed assets is required, an implementer
+    // should use AudioWorkletNode to implement playback."
+    /*
+    audio_src: web_sys::AudioBufferSourceNode, */
+}
+
+#[wasm_bindgen]
+impl Destroyer {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Result<Destroyer, JsValue> {
+        log("ctor de la Destroyer");
+
+        // ctor() audioContext, top lvl entr pt of Web Audio
+        let ctx = web_sys::AudioContext::new()?;
+
+        Ok(Destroyer {
+            ctx,
+        })
+        /*
+         
+        // TODO hw set opt ctor args?
+        // ? y detune, playback r/o? dynmc ctrl impsbl?
+        // -> dem setby ctor args
+        let audio_src = ctx.create_audio_buffer_source()?;
+        // ? hw fil buf? 
+        // -> copyToChannel(Float32Array source, 
+        //              unsigned long channelNumber, 
+        //              optional unsigned long bufferOffSet)
+        let buf = ctx.create_buffer(/* unsigned long numChannel*/ 2,
+                                    /* unsigned long length */ 1,
+                                    /* float smpl rate */ 3300);
+
+        web_sys::window().document().body();
+
+		
+		let window = web_sys::window().expect("no global `window` exists");
+		let document = window.document().expect("should have a document on window");
+		let body = document.body().expect("document should have a body");
+
+		// Manufacture the element we're gonna append
+		let val = document.create_element("p")?;
+		val.set_text_content("Hello from Rust!");
+
+		body.append_child(&val)?;
+
+        // ? hw load snd fyl 2 Float32Array? encoding suppted?
+        // aif no, flac ya
+        let floatArr
+
+        buf.copy_to_channel(floatArr, 1, 0);
+
+
+
+        // TODO <- audioBuffer
+        audio_src.buffer().set_value();
+
+        // TODO configure audio buffer src node
+
+        Ok(Destroyer {
+            ctx,
+            audio_src,
+        })
+        */
+    }
+
+    #[wasm_bindgen]
+    pub fn power_to_kill(&self) {
+        log("power_to_kill");
     }
 }

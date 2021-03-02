@@ -19,6 +19,7 @@ features = [
   'AudioContext',
   'AudioDestinationNode',
   'AudioNode',
+  'AudioBufferSourceNode',
   'AudioParam',
   'GainNode',
   'OscillatorNode',
