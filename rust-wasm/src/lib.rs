@@ -1,6 +1,7 @@
 use pitch_detection::{McLeodDetector, PitchDetector};
 use web_sys::*;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
 
 // originally based on https://rustwasm.github.io/wasm-bindgen/examples/web-audio.html
 
@@ -257,23 +258,33 @@ impl Destroyer {
         // TODO hw set opt ctor args?
         // ? y detune, playback r/o? dynmc ctrl impsbl?
         // -> dem setby ctor args
-        let audio_src = ctx.create_audio_buffer_source()?;
+        let audio_src = ctx.create_buffer_source()?;
         // ? hw fil buf? 
         // -> copyToChannel(Float32Array source, 
         //              unsigned long channelNumber, 
         //              optional unsigned long bufferOffSet)
         let buf = ctx.create_buffer(/* unsigned long numChannel*/ 2,
                                     /* unsigned long length */ 1,
-                                    /* float smpl rate */ 3300);
+                                    /* float smpl rate */ 3300.0);
 
-        // retriv <audio>
-        log(web_sys::window().expect("window")
-            .document().expect("document")
-            .body().expect("body"));
-        let window = web_sys::window().expect("no global `window` exists");
-        let document = window.document().expect("should have a document on window");
-        let body = document.body().expect("document should have a body");
+        // retriv <audio>, mk HTMLMediaElementSource
+        let wndw = web_sys::window().unwrap();
+        let doc = wndw.document().unwrap();
+        let audio_el = doc.get_element_by_id("tv_angel_drums").unwrap()
+            .dyn_into::<web_sys::HtmlMediaElement>().unwrap(); // dynmc cast
+        let /* media_element_audio_source */ track = ctx.create_media_element_source(&audio_el).unwrap();
+        track.connect_with_audio_node(&ctx.destination())?;
+        audio_el.set_loop(true);
+        audio_el.play()?;
+        //gain.connect_with_audio_node(&ctx.destination())?;
 
+        // how do i go from medial element source to...
+
+		let val = doc.get_element_by_id("paragraphId")
+			.unwrap()
+			.dyn_into::<web_sys::HtmlElement>()
+			.unwrap();
+        web_sys::console::log_2(&"URL: %s".into(), &JsValue::from_str(&val.inner_text()));
 
         /*
         // ? hw load snd fyl 2 Float32Array? encoding suppted?
