@@ -247,6 +247,10 @@ pub struct Destroyer {
     audio_src: web_sys::AudioBufferSourceNode,
 }
 
+fn print_type_of<T>(_: &T) {
+        println!("{}", std::any::type_name::<T>())
+}
+
 #[wasm_bindgen]
 impl Destroyer {
     #[wasm_bindgen(constructor)]
@@ -267,18 +271,26 @@ impl Destroyer {
                                     /* unsigned long length */ 1,
                                     /* float smpl rate */ 3300.0);
 
+        /* FIXME buf not yet used */
+
         // retriv <audio>, mk HTMLMediaElementSource
         let wndw = web_sys::window().unwrap();
         let doc = wndw.document().unwrap();
-        let audio_el = doc.get_element_by_id("tv_angel_drums").unwrap()
-            .dyn_into::<web_sys::HtmlMediaElement>().unwrap(); // dynmc cast
-        let /* media_element_audio_source */ track = ctx.create_media_element_source(&audio_el).unwrap();
-        track.connect_with_audio_node(&ctx.destination())?;
-        audio_el.set_loop(true);
-        audio_el.play()?;
+
+        let tracks = vec!["tv_angel_guitar", "tv_angel_drums"];
+        for track in tracks.iter() {
+            let audio_el = doc.get_element_by_id(track).unwrap()
+                .dyn_into::<web_sys::HtmlMediaElement>().unwrap(); // dynmc cast
+            let /* media_element_audio_source_node */ source = ctx.create_media_element_source(&audio_el).unwrap();
+            source.connect_with_audio_node(&ctx.destination())?;
+
+            audio_el.set_loop(true);
+            audio_el.play()?;
+        }
+
         //gain.connect_with_audio_node(&ctx.destination())?;
 
-        // how do i go from medial element source to...
+        // how do i go from media element source to...
 
 		let val = doc.get_element_by_id("paragraphId")
 			.unwrap()

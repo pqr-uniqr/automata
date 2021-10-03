@@ -1,0 +1,53 @@
+panic: runtime error: invalid memory address or nil pointer dereference
+
+goroutine 103 [running]:
+runtime/debug.Stack(0x13c9460, 0xc000113200, 0x13fdc4f)
+	/usr/local/Cellar/go/1.16.5/libexec/src/runtime/debug/stack.go:24 +0x9f
+main.carp.func1.1(0x1476950, 0xc0002900e0)
+	/Users/pqhwan/go/src/automata/main.go:46 +0x14c
+panic(0x139cb80, 0x166d3c0)
+	/usr/local/Cellar/go/1.16.5/libexec/src/runtime/panic.go:965 +0x1b9
+image.(*RGBA).Bounds(...)
+	/usr/local/Cellar/go/1.16.5/libexec/src/image/image.go:87
+pqr.io/pqr/qrweb.makeTarg(0x13f87c7, 0x3, 0x29, 0xc00028e0a2, 0x1, 0x129c64b)
+	/Users/pqhwan/go/src/automata/qrweb/play.go:399 +0x52
+pqr.io/pqr/qrweb.Draw(0x1476950, 0xc0002900e0, 0xc000188000)
+	/Users/pqhwan/go/src/automata/qrweb/play.go:143 +0x405
+net/http.HandlerFunc.ServeHTTP(...)
+	/usr/local/Cellar/go/1.16.5/libexec/src/net/http/server.go:2069
+main.carp.func1(0x1476950, 0xc0002900e0, 0xc000188000)
+	/Users/pqhwan/go/src/automata/main.go:49 +0x75
+net/http.HandlerFunc.ServeHTTP(0xc000110e40, 0x1476950, 0xc0002900e0, 0xc000188000)
+	/usr/local/Cellar/go/1.16.5/libexec/src/net/http/server.go:2069 +0x44
+net/http.(*ServeMux).ServeHTTP(0x167d9c0, 0x1476950, 0xc0002900e0, 0xc000188000)
+	/usr/local/Cellar/go/1.16.5/libexec/src/net/http/server.go:2448 +0x1ad
+net/http.serverHandler.ServeHTTP(0xc00017e000, 0x1476950, 0xc0002900e0, 0xc000188000)
+	/usr/local/Cellar/go/1.16.5/libexec/src/net/http/server.go:2887 +0xa3
+net/http.(*conn).serve(0xc00009e0a0, 0x1477060, 0xc00007c1c0)
+	/usr/local/Cellar/go/1.16.5/libexec/src/net/http/server.go:1952 +0x8cd
+created by net/http.(*Server).Serve
+	/usr/local/Cellar/go/1.16.5/libexec/src/net/http/server.go:3013 +0x39b
+
+QArt Coder (PQR - Pete's QR codes)
+URL: 
+{{.URL}}
+
+Tip: Short URLs work best.
+	
+		
+	
+	QR Size	
+	Image Size	
+ Random Pixels
+ Data Pixels Only
+ Dither
+ Show Controllable Pixels
+Update     Rotate
+No file chosen
+
+Tip: small, high contrast images work best.
+Use the blue buttons to move the image within the code
+and to change the size of the code and the image.
+
+How does this work?
+
