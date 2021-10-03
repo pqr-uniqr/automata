@@ -274,18 +274,28 @@ impl Destroyer {
         /* FIXME buf not yet used */
 
         // retriv <audio>, mk HTMLMediaElementSource
-        let wndw = web_sys::window().unwrap();
-        let doc = wndw.document().unwrap();
+        let wndw = web_sys::window().expect("global window missing");
+        let doc = wndw.document().expect("document missing");
+        let body = doc.body().expect("body missing");
 
-        let tracks = vec!["tv_angel_guitar", "tv_angel_drums"];
+        let tracks = vec!["smplz/tv_angel_guitar_0.flac", "smplz/tv_angel_drums_0.flac"];
         for track in tracks.iter() {
-            let audio_el = doc.get_element_by_id(track).unwrap()
-                .dyn_into::<web_sys::HtmlMediaElement>().unwrap(); // dynmc cast
-            let /* media_element_audio_source_node */ source = ctx.create_media_element_source(&audio_el).unwrap();
-            source.connect_with_audio_node(&ctx.destination())?;
+            /* capture audio with analyser. 
+             *
+             * https://stackoverflow.com/questions/11292076
+             */
+            let audio = doc.create_element("audio")?.dyn_into::<web_sys::HtmlMediaElement>().unwrap();
+            audio.set_attribute("src", track);
+            audio.set_attribute("loop", "true");
 
-            audio_el.set_loop(true);
-            audio_el.play()?;
+            let anlzr = ctx.create_analyser();
+            let mel_src_node = ctx.create_media_element_source(&audio).expect("media element not found: ");
+
+            //let /* media_element_audio_source_node */ source = ctx.create_media_element_source(&audio).unwrap();
+            mel_src_node.connect_with_audio_node(&ctx.destination())?;
+
+            audio.set_loop(true);
+            audio.play()?;
         }
 
         //gain.connect_with_audio_node(&ctx.destination())?;
