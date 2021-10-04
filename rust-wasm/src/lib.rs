@@ -276,34 +276,24 @@ impl Destroyer {
         // retriv <audio>, mk HTMLMediaElementSource
         let wndw = web_sys::window().expect("global window missing");
         let doc = wndw.document().expect("document missing");
-        let body = doc.body().expect("body missing");
 
         let tracks = vec!["smplz/tv_angel_guitar_0.flac", "smplz/tv_angel_drums_0.flac"];
         for track in tracks.iter() {
-            /* capture audio with analyser. 
-             *
-             * https://stackoverflow.com/questions/11292076
-             */
             let audio = doc.create_element("audio")?.dyn_into::<web_sys::HtmlMediaElement>().unwrap();
             audio.set_attribute("src", track);
             audio.set_attribute("loop", "true");
-            let mel_src_node = ctx.create_media_element_source(&audio).expect("media element not found: ");
-
-            let analyzer = ctx.create_analyser()?;
-
-            log("1");
-            mel_src_node.connect_with_audio_node(&analyzer.dyn_into::<web_sys::AudioNode>().expect("cast failed"));
-            log("2");
-            analyzer.connect_with_audio_node(&ctx.destination())?;
-
-
+            let node = ctx.create_media_element_source(&audio).expect("media element not found");
+            node.connect_with_audio_node(&ctx.destination())?;
             audio.set_loop(true);
             audio.play()?;
         }
 
-        //gain.connect_with_audio_node(&ctx.destination())?;
-
-        // how do i go from media element source to...
+        // how to get a buffer audio source out of media element
+        //
+        // https://github.com/WebAudio/web-audio-api/issues/1872
+        // https://stackoverflow.com/questions/11292076
+        //
+        //
 
 		let val = doc.get_element_by_id("paragraphId")
 			.unwrap()

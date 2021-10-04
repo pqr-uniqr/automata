@@ -2,6 +2,7 @@
 
 [[ "$1" == 'build' ]] && {
     echo building..
+    # build go-wasm 
     cd go-wasm
     GOOS=js GOARCH=wasm go build -o main.wasm
     cp main.wasm ../static/

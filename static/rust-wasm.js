@@ -6,7 +6,6 @@ import("./pkg/wasm.js").then((rust_module /* rust_module */) => {
 		const destroy_button = document.getElementById("destroy");
 		const audioElement = document.querySelector('audio');
 		destroy_button.addEventListener("click", event => {
-
 			// pass it into the audio context
 			// const track = audioContext.createMediaElementSource(audioElement);
 
@@ -19,7 +18,6 @@ import("./pkg/wasm.js").then((rust_module /* rust_module */) => {
 				infinite_destructive_empowerment = null;
 			}
 		});
-
 
         /*
 		let fm = null;
