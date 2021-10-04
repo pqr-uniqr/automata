@@ -287,12 +287,15 @@ impl Destroyer {
             let audio = doc.create_element("audio")?.dyn_into::<web_sys::HtmlMediaElement>().unwrap();
             audio.set_attribute("src", track);
             audio.set_attribute("loop", "true");
-
-            let anlzr = ctx.create_analyser();
             let mel_src_node = ctx.create_media_element_source(&audio).expect("media element not found: ");
 
-            //let /* media_element_audio_source_node */ source = ctx.create_media_element_source(&audio).unwrap();
-            mel_src_node.connect_with_audio_node(&ctx.destination())?;
+            let analyzer = ctx.create_analyser()?;
+
+            log("1");
+            mel_src_node.connect_with_audio_node(&analyzer.dyn_into::<web_sys::AudioNode>().expect("cast failed"));
+            log("2");
+            analyzer.connect_with_audio_node(&ctx.destination())?;
+
 
             audio.set_loop(true);
             audio.play()?;
