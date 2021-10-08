@@ -1,7 +1,8 @@
 import("./pkg/wasm.js").then((rust_module /* rust_module */) => {
 	rust_module.default().then((_) => {
 
-        let infinite_destructive_empowerment = null;
+
+		let infinite_destructive_empowerment = null;
 
 		const destroy_button = document.getElementById("destroy");
 		const audioElement = document.querySelector('audio');
@@ -10,16 +11,19 @@ import("./pkg/wasm.js").then((rust_module /* rust_module */) => {
 			// const track = audioContext.createMediaElementSource(audioElement);
 
 			if (infinite_destructive_empowerment === null) {
-                infinite_destructive_empowerment = new rust_module.Destroyer();
-                console.log(infinite_destructive_empowerment);
-                infinite_destructive_empowerment.power_to_kill();
+				infinite_destructive_empowerment = new rust_module.Destroyer();
+				console.log(infinite_destructive_empowerment);
+				infinite_destructive_empowerment.power_to_kill();
 			} else {
 				infinite_destructive_empowerment.free();
 				infinite_destructive_empowerment = null;
 			}
 		});
 
-        /*
+
+
+
+		/*
 		let fm = null;
 
 		const play_button = document.getElementById("play");
@@ -57,8 +61,8 @@ import("./pkg/wasm.js").then((rust_module /* rust_module */) => {
 			}
 		});
 
-        console.log('rust-wasm done');
-        */
+		console.log('rust-wasm done');
+		*/
 
 	})
 });

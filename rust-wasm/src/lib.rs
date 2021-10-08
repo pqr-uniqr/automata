@@ -251,6 +251,10 @@ fn print_type_of<T>(_: &T) {
         println!("{}", std::any::type_name::<T>())
 }
 
+fn process_audio(var: f32) {
+
+}
+
 #[wasm_bindgen]
 impl Destroyer {
     #[wasm_bindgen(constructor)]
@@ -277,22 +281,31 @@ impl Destroyer {
         let wndw = web_sys::window().expect("global window missing");
         let doc = wndw.document().expect("document missing");
 
+        let script_processor_node = ctx.create_script_processor().unwrap();
+        log(&format!("buffer size: {:?}", script_processor_node.buffer_size())); // 1024
+        script_processor_node.connect_with_audio_node(&ctx.destination())?;
+        script_processor_node.set_onaudioprocess(); // Option<&Function>
+
         let tracks = vec!["smplz/tv_angel_guitar_0.flac", "smplz/tv_angel_drums_0.flac"];
         for track in tracks.iter() {
-            let audio = doc.create_element("audio")?.dyn_into::<web_sys::HtmlMediaElement>().unwrap();
-            audio.set_attribute("src", track);
-            audio.set_attribute("loop", "true");
-            let node = ctx.create_media_element_source(&audio).expect("media element not found");
-            node.connect_with_audio_node(&ctx.destination())?;
-            audio.set_loop(true);
-            audio.play()?;
+            let media_element =
+                doc.create_element("audio")?.dyn_into::<web_sys::HtmlMediaElement>().unwrap();
+            media_element.set_attribute("src", track);
+            media_element.set_attribute("loop", "true");
+            media_element.set_loop(true);
+            
+            let media_node = ctx.create_media_element_source(&media_element).expect("media element not found");
+
+            media_node.connect_with_audio_node(script_processor_node)?;
+
+            media_element.play()?;
         }
 
         // how to get a buffer audio source out of media element
         //
         // https://github.com/WebAudio/web-audio-api/issues/1872
-        // https://stackoverflow.com/questions/11292076
-        //
+        // https://stackoverflow.com/questions/11292076 - create a 
+        // https://www.w3.org/2011/audio/wiki/Spec_Differences#Reading_Data_from_a_Media_Element
         //
 
 		let val = doc.get_element_by_id("paragraphId")

@@ -1002,7 +1002,7 @@ features = [
 	#'ScreenColorGamut',
 	#'ScreenLuminance',
 	#'ScreenOrientation',
-	#'ScriptProcessorNode',
+	'ScriptProcessorNode',
 	#'ScrollAreaEvent',
 	#'ScrollBehavior',
 	#'ScrollBoxObject',
