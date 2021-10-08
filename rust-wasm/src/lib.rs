@@ -1,7 +1,7 @@
 use pitch_detection::{McLeodDetector, PitchDetector};
-use web_sys::*;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use web_sys::*;
 
 // originally based on https://rustwasm.github.io/wasm-bindgen/examples/web-audio.html
 
@@ -14,68 +14,66 @@ mod tests {
 }
 
 #[wasm_bindgen] // this is an attribute
-extern {
+extern "C" {
     pub fn alert(s: &str);
 }
 
 // pub means function is offered as a library, no usage requirement
 // within the project.
 #[wasm_bindgen]
-pub fn greet(name: &str) { 
-        alert(&format!("Hello, {}!", name));
+pub fn greet(name: &str) {
+    alert(&format!("Hello, {}!", name));
 }
 
 #[wasm_bindgen]
 pub struct WasmPitchDetector {
-  sample_rate: usize,
-  fft_size: usize,
-  detector: McLeodDetector<f32>,
+    sample_rate: usize,
+    fft_size: usize,
+    detector: McLeodDetector<f32>,
 }
 
 #[wasm_bindgen]
 impl WasmPitchDetector {
-  pub fn new(sample_rate: usize, fft_size: usize) -> WasmPitchDetector {
+    pub fn new(sample_rate: usize, fft_size: usize) -> WasmPitchDetector {
+        let fft_pad = fft_size / 2;
 
-    let fft_pad = fft_size / 2;
-
-    WasmPitchDetector {
-      sample_rate,
-      fft_size,
-      detector: McLeodDetector::<f32>::new(fft_size, fft_pad),
-    }
-  }
-
-  pub fn detect_pitch(&mut self, audio_samples: Vec<f32>) -> f32 {
-    if audio_samples.len() < self.fft_size {
-      panic!("Insufficient samples passed to detect_pitch(). Expected an array containing {} elements but got {}", self.fft_size, audio_samples.len());
+        WasmPitchDetector {
+            sample_rate,
+            fft_size,
+            detector: McLeodDetector::<f32>::new(fft_size, fft_pad),
+        }
     }
 
-    // Include only notes that exceed a power threshold which relates to the
-    // amplitude of frequencies in the signal. Use the suggested default
-    // value of 5.0 from the library.
-    const POWER_THRESHOLD: f32 = 5.0;
+    pub fn detect_pitch(&mut self, audio_samples: Vec<f32>) -> f32 {
+        if audio_samples.len() < self.fft_size {
+            panic!("Insufficient samples passed to detect_pitch(). Expected an array containing {} elements but got {}", self.fft_size, audio_samples.len());
+        }
 
-    // The clarity measure describes how coherent the sound of a note is. For
-    // example, the background sound in a crowded room would typically be would
-    // have low clarity and a ringing tuning fork would have high clarity.
-    // This threshold is used to accept detect notes that are clear enough
-    // (valid values are in the range 0-1).
-    const CLARITY_THRESHOLD: f32 = 0.6;
+        // Include only notes that exceed a power threshold which relates to the
+        // amplitude of frequencies in the signal. Use the suggested default
+        // value of 5.0 from the library.
+        const POWER_THRESHOLD: f32 = 5.0;
 
-    let optional_pitch = self.detector.get_pitch(
-      &audio_samples,
-      self.sample_rate,
-      POWER_THRESHOLD,
-      CLARITY_THRESHOLD,
-    );
+        // The clarity measure describes how coherent the sound of a note is. For
+        // example, the background sound in a crowded room would typically be would
+        // have low clarity and a ringing tuning fork would have high clarity.
+        // This threshold is used to accept detect notes that are clear enough
+        // (valid values are in the range 0-1).
+        const CLARITY_THRESHOLD: f32 = 0.6;
 
-    match optional_pitch {
-      Some(pitch) => pitch.frequency,
-      None => 0.0,
+        let optional_pitch = self.detector.get_pitch(
+            &audio_samples,
+            self.sample_rate,
+            POWER_THRESHOLD,
+            CLARITY_THRESHOLD,
+        );
+
+        match optional_pitch {
+            Some(pitch) => pitch.frequency,
+            None => 0.0,
+        }
     }
-  }
 }
-
 
 /// Converts a midi note to frequency
 ///
@@ -120,20 +118,18 @@ impl FmOsc {
         // instantiate audioContext, web audio's top level, entry point interface
         let ctx = web_sys::AudioContext::new()?;
 
-
-
         // create oscillators and knobs
         let primary = ctx.create_oscillator()?;
         let fm_osc = ctx.create_oscillator()?;
         let gain = ctx.create_gain()?;
         let fm_gain = ctx.create_gain()?;
 
-        // set oscillator wave types and frequencies 
+        // set oscillator wave types and frequencies
         primary.set_type(OscillatorType::Sine);
         primary.frequency().set_value(440.0); // A4 note
         gain.gain().set_value(0.0); // starts muted
         fm_gain.gain().set_value(0.0); // no initial frequency modulation
-        fm_osc.set_type(OscillatorType::Sine); 
+        fm_osc.set_type(OscillatorType::Sine);
         fm_osc.frequency().set_value(0.0);
 
         // Connect the nodes up!
@@ -217,7 +213,6 @@ impl FmOsc {
     }
 }
 
-
 // https://rustwasm.github.io/wasm-bindgen/examples/console-log.html
 #[wasm_bindgen]
 extern "C" {
@@ -248,12 +243,10 @@ pub struct Destroyer {
 }
 
 fn print_type_of<T>(_: &T) {
-        println!("{}", std::any::type_name::<T>())
+    println!("{}", std::any::type_name::<T>());
 }
 
-fn process_audio(var: f32) {
-
-}
+fn process_audio(var: f32) {}
 
 #[wasm_bindgen]
 impl Destroyer {
@@ -267,13 +260,14 @@ impl Destroyer {
         // ? y detune, playback r/o? dynmc ctrl impsbl?
         // -> dem setby ctor args
         let audio_src = ctx.create_buffer_source()?;
-        // ? hw fil buf? 
-        // -> copyToChannel(Float32Array source, 
-        //              unsigned long channelNumber, 
+        // ? hw fil buf?
+        // -> copyToChannel(Float32Array source,
+        //              unsigned long channelNumber,
         //              optional unsigned long bufferOffSet)
-        let buf = ctx.create_buffer(/* unsigned long numChannel*/ 2,
-                                    /* unsigned long length */ 1,
-                                    /* float smpl rate */ 3300.0);
+        let buf = ctx.create_buffer(
+            /* unsigned long numChannel*/ 2, /* unsigned long length */ 1,
+            /* float smpl rate */ 3300.0,
+        );
 
         /* FIXME buf not yet used */
 
@@ -282,21 +276,31 @@ impl Destroyer {
         let doc = wndw.document().expect("document missing");
 
         let script_processor_node = ctx.create_script_processor().unwrap();
-        log(&format!("buffer size: {:?}", script_processor_node.buffer_size())); // 1024
+        log(&format!(
+            "buffer size: {:?}",
+            script_processor_node.buffer_size()
+        )); // 1024
         script_processor_node.connect_with_audio_node(&ctx.destination())?;
-        script_processor_node.set_onaudioprocess(); // Option<&Function>
+        // script_processor_node.set_onaudioprocess(); // Option<&Function>
 
-        let tracks = vec!["smplz/tv_angel_guitar_0.flac", "smplz/tv_angel_drums_0.flac"];
+        let tracks = vec![
+            "smplz/tv_angel_guitar_0.flac",
+            "smplz/tv_angel_drums_0.flac",
+        ];
         for track in tracks.iter() {
-            let media_element =
-                doc.create_element("audio")?.dyn_into::<web_sys::HtmlMediaElement>().unwrap();
+            let media_element = doc
+                .create_element("audio")?
+                .dyn_into::<web_sys::HtmlMediaElement>()
+                .unwrap();
             media_element.set_attribute("src", track);
             media_element.set_attribute("loop", "true");
             media_element.set_loop(true);
-            
-            let media_node = ctx.create_media_element_source(&media_element).expect("media element not found");
 
-            media_node.connect_with_audio_node(script_processor_node)?;
+            let media_node = ctx
+                .create_media_element_source(&media_element)
+                .expect("media element not found");
+
+            // media_node.connect_with_audio_node(script_processor_node)?;
 
             media_element.play()?;
         }
@@ -304,14 +308,15 @@ impl Destroyer {
         // how to get a buffer audio source out of media element
         //
         // https://github.com/WebAudio/web-audio-api/issues/1872
-        // https://stackoverflow.com/questions/11292076 - create a 
+        // https://stackoverflow.com/questions/11292076 - create a
         // https://www.w3.org/2011/audio/wiki/Spec_Differences#Reading_Data_from_a_Media_Element
         //
 
-		let val = doc.get_element_by_id("paragraphId")
-			.unwrap()
-			.dyn_into::<web_sys::HtmlElement>()
-			.unwrap();
+        let val = doc
+            .get_element_by_id("paragraphId")
+            .unwrap()
+            .dyn_into::<web_sys::HtmlElement>()
+            .unwrap();
         web_sys::console::log_2(&"URL: %s".into(), &JsValue::from_str(&val.inner_text()));
 
         /*
@@ -326,10 +331,7 @@ impl Destroyer {
 
         // TODO configure audio buffer src node
 
-        Ok(Destroyer {
-            ctx,
-            audio_src,
-        })
+        Ok(Destroyer { ctx, audio_src })
     }
 
     #[wasm_bindgen]

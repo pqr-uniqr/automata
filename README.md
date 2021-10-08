@@ -84,6 +84,7 @@ installed via vim-plug
 
 https://github.com/junegunn/vim-plug
 
+---
 
-
+https://taplo.tamasfe.dev/ for toml.
 
