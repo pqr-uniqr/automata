@@ -45,5 +45,45 @@ file structure
 > shit why does the wasm.js file contain the Destroyer thing. isn't this a
 > library? chill we can move it out.
 
-
 https://github.com/naomiaro/waveform-playlist
+
+# Dev env stuff
+following 
+
+https://medium.com/cloud-native-the-gathering/whats-the-best-ide-for-developing-in-rust-5087d46006f5
+https://rust-analyzer.github.io/manual.html#vimneovim 
+
+---
+racer
+
+https://github.com/racer-rust/racer
+https://github.com/racer-rust/vim-racer
+
+```
+augroup Racer
+    autocmd!
+    autocmd FileType rust nmap <buffer> gd         <Plug>(rust-def)
+    autocmd FileType rust nmap <buffer> gs         <Plug>(rust-def-split)
+    autocmd FileType rust nmap <buffer> gx         <Plug>(rust-def-vertical)
+    autocmd FileType rust nmap <buffer> gt         <Plug>(rust-def-tab)
+    autocmd FileType rust nmap <buffer> <leader>gd <Plug>(rust-doc)
+    autocmd FileType rust nmap <buffer> <leader>gD <Plug>(rust-doc-tab)
+augroup END
+```
+
+actually, racer is outdated.  https://rust-analyzer.github.io/ is the latest.
+
+---
+
+install vim lsp (language server protocol)
+
+https://github.com/prabirshrestha/vim-lsp
+https://github.com/mattn/vim-lsp-settings - LspInstallServer
+
+installed via vim-plug
+
+https://github.com/junegunn/vim-plug
+
+
+
+
